@@ -1,28 +1,23 @@
-//There is 2 main functions: itemDropActions, itemDragActions
-//itemDragActions is a function wich in general adds to item some drag and drop features
-//itemDropActions is a function wich declares what will heppend to item when drag and drop action will end
-//and also there 1 config object wich should be edited if needed
-
-let     elementsOfSchema = [], // array with movable items inside the work field
-        newElementOfSchema,
-        shiftX, shiftY,
-        workFieldSelectedAsDropTarget = null,
-        workSpaceItemSelectedAsDropTarget = null,
-        dropTarget = null,
-        currentItem = null,
-        contextMenu = null,
-        contextMenuContent = null
-           
 /**
- * @param {mouse event} mouseEvent 
- * @param {item wich will be moved with mouse cursor} movableItem 
- * @param {offset wich allows user hold item in place where lmb was pressed on it (x - axes)} itemOffsetX 
- * @param {offset wich allows user hold item in place where lmb was pressed on it (y - axes)} itemOffsetY
- * @param {element on the page (div, etc) inside wich movable item can be but can`t leave} zoneForMoving 
+ * Fill item panel with items, wich are declared in special object
+ * @param {string} itemPanel identifier of panel wich contains items
+ * @param {object} objectWithItems JSON object with available items
  */
-function moveAt(mouseEvent, movableItem, itemOffsetX, itemOffsetY) {
-    movableItem.style.left = mouseEvent.clientX - itemOffsetX + 'px';
-    movableItem.style.top = mouseEvent.clientY - itemOffsetY + 'px';
+function fillItemPanelWithItems(itemPanel, objectWithItems) {
+    let itemPanelFolder = document.createElement('div');
+    let itemPanelElement = document.createElement('div');
+    //specific item panel element creation
+    let itemPanelWorkSpaceElement = document.createElement('div');
+    let itemPanelElementContainer = document.createElement('div');
+    
+    itemPanelElement.appendChild(document.createElement('img'));
+
+    //adding some things to specific element
+    itemPanelWorkSpaceElement.appendChild(document.createElement('div'));
+    itemPanelWorkSpaceElement.childNodes[0].appendChild(document.createElement('img'));
+    itemPanelWorkSpaceElement.appendChild(document.createElement('div'));
+
+    console.log(itemPanelWorkSpaceElement)
 }
 
 /**
@@ -37,34 +32,72 @@ function createNewItem(event, rootItem) {
     workZone.append(elementsOfSchema[elementsOfSchema.length-1])
     newElementOfSchema = elementsOfSchema[elementsOfSchema.length-1]
 
-    //calculating shift of div position wich will be moved along with cursor
-    //calculation made with rootItems properties
-    shiftX = event.pageX - rootItem.getBoundingClientRect().left,
-    shiftY = event.pageY - rootItem.getBoundingClientRect().top;
-
     if (newElementOfSchema.getAttribute('i-name') == 'work_space') {
         //newElementOfSchema is a work-space-head and work-space-container holder
+        newElementOfSchema.style = null;
         newElementOfSchema.className = 'work-space';
-        newElementOfSchema.childNodes[1].style = null;
+        newElementOfSchema.style.padding = `${CONFIG.UI.workSpace.mainDiv.padding * CONFIG.UI.workZoneCurrentScale}px`;
+        newElementOfSchema.style.borderRadius = `${CONFIG.UI.defaultWorkZoneItemBorderRadius * CONFIG.UI.workZoneCurrentScale}px`;
         //acceapt work-space-head class to first cild div (image holder)
         newElementOfSchema.childNodes[1].className = 'work-space-head';
+        //accepting `unit-image` class to an image of every created div gives system possibility to detect
+        //this image by selector and do some fency stuff about zooming it
+        newElementOfSchema.childNodes[1].childNodes[1].className = `unit-image`;
+        newElementOfSchema.childNodes[1].style.width = 
+            `${CONFIG.UI.workSpace.defaultOffsetsWorkSpaceHead.width * CONFIG.UI.workZoneCurrentScale}px`;
+        newElementOfSchema.childNodes[1].style.height = 
+            `${CONFIG.UI.workSpace.defaultOffsetsWorkSpaceHead.height * CONFIG.UI.workZoneCurrentScale}px`;
+        newElementOfSchema.childNodes[1].childNodes[1].style.width = 
+            `${CONFIG.UI.defaultWorkZoneItemImageOffsets.width * CONFIG.UI.workZoneCurrentScale}px`;
+        newElementOfSchema.childNodes[1].childNodes[1].style.height = 
+            `${CONFIG.UI.defaultWorkZoneItemImageOffsets.height * CONFIG.UI.workZoneCurrentScale}px`;
     } else {
-        newElementOfSchema.className = 'field-item'
+        newElementOfSchema.className = 'field-item';
+        newElementOfSchema.style.width = `${CONFIG.UI.defaultWorkZoneItemsOffsets.width * CONFIG.UI.workZoneCurrentScale}px`;
+        newElementOfSchema.style.height = `${CONFIG.UI.defaultWorkZoneItemsOffsets.height * CONFIG.UI.workZoneCurrentScale}px`;
+        newElementOfSchema.style.borderRadius = `${CONFIG.UI.defaultWorkZoneItemBorderRadius * CONFIG.UI.workZoneCurrentScale}px`;
+        newElementOfSchema.childNodes[1].className = `unit-image`;
+        newElementOfSchema.childNodes[1].style.width = `${CONFIG.UI.defaultWorkZoneItemImageOffsets.width * CONFIG.UI.workZoneCurrentScale}px`;
+        newElementOfSchema.childNodes[1].style.height = `${CONFIG.UI.defaultWorkZoneItemImageOffsets.height * CONFIG.UI.workZoneCurrentScale}px`;
+    }
+
+    //becouse workZone item
+    if (newElementOfSchema.getAttribute('i-name')=='work_space') {
+        shiftX = (event.pageX - rootItem.getBoundingClientRect().left +
+            CONFIG.UI.workSpace.gapBetweenContainedItems * 2) * CONFIG.UI.workZoneCurrentScale
+        + workZone.getBoundingClientRect().left;
+        shiftY = (event.pageY - rootItem.getBoundingClientRect().top +
+            CONFIG.UI.workSpace.gapBetweenContainedItems * 2) * CONFIG.UI.workZoneCurrentScale
+        + workZone.getBoundingClientRect().top;
+    } else {
+        shiftX = (event.pageX - rootItem.getBoundingClientRect().left) * CONFIG.UI.workZoneCurrentScale
+        + workZone.getBoundingClientRect().left;
+        shiftY = (event.pageY - rootItem.getBoundingClientRect().top) * CONFIG.UI.workZoneCurrentScale
+        + workZone.getBoundingClientRect().top;
     }
 
     //set newly created item opacity to value wich is mentioned in config as itemOpacityWhileMoving
     newElementOfSchema.style.opacity = CONFIG.logic.itemOpacityWhileMoving;
-
     newElementOfSchema.ondragstart = () => false;
-
     newElementOfSchema.childNodes.forEach(element => {
         element.ondragstart = () => false;
     });
 }
 
 /**
+ * @param {event} mouseEvent mouse event
+ * @param {object} movableItem item wich will be moved with mouse cursor
+ * @param {int} itemOffsetX offset wich allows user hold item in place where lmb was pressed on it (x - axes)
+ * @param {int} itemOffsetY offset wich allows user hold item in place where lmb was pressed on it (y - axes)
+ */
+function moveAt(mouseEvent, movableItem, itemOffsetX, itemOffsetY) {
+    movableItem.style.left = mouseEvent.clientX - itemOffsetX + 'px';
+    movableItem.style.top = mouseEvent.clientY - itemOffsetY + 'px';
+}
+
+/**
  * Add drag and dtop to item and also adds some features like context menu by releasing lmb
- * @param {selected item} item 
+ * @param {object} item selected item 
  */
 function addDragAndDropToItem(item) {
     item.onmousedown = (event) => {
@@ -76,7 +109,7 @@ function addDragAndDropToItem(item) {
 
 /**
  * actions wich happens while drag and drop event is going
- * @param {item of actions} item 
+ * @param {object} item item of actions
  */
 function itemDragActions(item, event) {
     item.onmouseup = () => {
@@ -101,8 +134,8 @@ function itemDragActions(item, event) {
     workSpaceItemSelectedAsDropTarget = null;
     workSpaceContainerItemSelectedAsMoveTarget = null;
 
-    shiftX = event.pageX - item.getBoundingClientRect().left;
-    shiftY = event.pageY - item.getBoundingClientRect().top;
+    shiftX = event.pageX - item.getBoundingClientRect().left + workZone.getBoundingClientRect().left;
+    shiftY = event.pageY - item.getBoundingClientRect().top + workZone.getBoundingClientRect().top;
 
     if (!currentItem) {
         currentItem = 
@@ -111,17 +144,18 @@ function itemDragActions(item, event) {
 
     document.body.onmousemove = (event) => {
         if (event.buttons == 1) {
-            
+            enableItemPositionCalculationMethod = true;
             if(contextMenu) {
                 removeContextMenu()
             }
-
+            
             if(currentItem) {
                 item = currentItem
-                shiftX = event.pageX - item.getBoundingClientRect().left;
-                shiftY = event.pageY - item.getBoundingClientRect().top;
+                shiftX = event.pageX - item.getBoundingClientRect().left + workZone.getBoundingClientRect().left;
+                shiftY = event.pageY - item.getBoundingClientRect().top + workZone.getBoundingClientRect().top;
                 item.className = 'field-item' 
                 workZone.append(item)
+                zoom('out', 0);
                 moveAt(event, item, shiftX, shiftY);   
                 item.style.opacity = CONFIG.itemOpacityWhileMoving;
                 /**
@@ -194,6 +228,7 @@ function itemDropActions(item, workSpaceItemDropType, workFieldSelectedAsDropTar
     || workZone.getBoundingClientRect().right < item.getBoundingClientRect().left 
     || workZone.getBoundingClientRect().top > item.getBoundingClientRect().bottom
     || workZone.getBoundingClientRect().bottom < item.getBoundingClientRect().top)) {
+        enableItemPositionCalculationMethod = false;
         console.log('item should be deleted')
         item.remove();
     } 
@@ -202,6 +237,7 @@ function itemDropActions(item, workSpaceItemDropType, workFieldSelectedAsDropTar
     || (workZone.getBoundingClientRect().right < item.getBoundingClientRect().right)
     || (workZone.getBoundingClientRect().top > item.getBoundingClientRect().top)
     || (workZone.getBoundingClientRect().bottom < item.getBoundingClientRect().bottom)) {
+        enableItemPositionCalculationMethod = false;
         item.style.transition = `all ease-in-out ${CONFIG.logic.outOfZoneAnimationTime}s`
         setTimeout(() => {
             item.style.transition = `all ease-in-out 0s`;
@@ -209,33 +245,66 @@ function itemDropActions(item, workSpaceItemDropType, workFieldSelectedAsDropTar
     }
 
     if (workZone.getBoundingClientRect().left > item.getBoundingClientRect().left) {
-        item.style.left = workZone.getBoundingClientRect().left +
-        CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + 'px';
+        enableItemPositionCalculationMethod = false;
+        item.style.left =
+        CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + '%';
     }
 
     if (workZone.getBoundingClientRect().right < item.getBoundingClientRect().right) {
-        item.style.left = workZone.getBoundingClientRect().right -
-        CONFIG.logic.itemMovingOffsetFromWorkZoneBorder - item.offsetWidth + 'px';
+        enableItemPositionCalculationMethod = false;
+        item.style.left = 100 - (CONFIG.UI.defaultWorkZoneItemsOffsets.width * CONFIG.UI.workZoneCurrentScale /
+             workZone.offsetWidth * 100) - CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + '%';
     }
 
     if (workZone.getBoundingClientRect().top > item.getBoundingClientRect().top) {
-        item.style.top = workZone.getBoundingClientRect().top +
-        CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + 'px';
+        enableItemPositionCalculationMethod = false;
+        item.style.top = 
+        CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + '%';
     }
 
     if (workZone.getBoundingClientRect().bottom < item.getBoundingClientRect().bottom) {
-        item.style.top = workZone.getBoundingClientRect().bottom -
-        CONFIG.logic.itemMovingOffsetFromWorkZoneBorder - item.offsetHeight + 'px';
+        enableItemPositionCalculationMethod = false;
+        item.style.top = 100 - (CONFIG.UI.defaultWorkZoneItemsOffsets.height * CONFIG.UI.workZoneCurrentScale /
+             workZone.offsetHeight * 100) - CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + '%';
     }
 
     if (workSpaceItemSelectedAsDropTarget) {
         if (item.getAttribute('i-type') == 'structure') {
-            //do nothing if work_space tring to drop on work_space
+            //do nothing if structure item is trying to be dropped on work_space
         } else if (workSpaceItemDropType == 0) {
+            //if item drops on work_space for the firs time, do initialization of work_space_container
+            //main parameters
+            if (workSpaceItemSelectedAsDropTarget.childNodes[3].style.display = 'none') {
+                let workSpaceContainer = workSpaceItemSelectedAsDropTarget.childNodes[3];
+                let amountOfItemsPerRow = CONFIG.UI.workSpace.amountOfContainedItemsPerRow;
+                workSpaceContainer.style.paddingBottom = `${CONFIG.UI.workSpace.gapBetweenContainedItems *
+                    CONFIG.UI.workZoneCurrentScale}px`;
+                workSpaceContainer.style.paddingLeft = `${CONFIG.UI.workSpace.gapBetweenContainedItems *
+                    CONFIG.UI.workZoneCurrentScale}px`;
+                workSpaceContainer.style.marginLeft = `${CONFIG.UI.workSpace.distanceBetweenContainerAndHead *
+                    CONFIG.UI.workZoneCurrentScale}px`;
+                workSpaceContainer.style.maxWidth = 
+                    `${(amountOfItemsPerRow * CONFIG.UI.workSpace.defaultOffsetsWorkSpaceContainerItem.width + 
+                        amountOfItemsPerRow * CONFIG.UI.workSpace.gapBetweenContainedItems) 
+                        * CONFIG.UI.workZoneCurrentScale}px`;
+                workSpaceContainer.style.borderRadius = `${CONFIG.UI.defaultWorkZoneItemBorderRadius *
+                     CONFIG.UI.workZoneCurrentScale}px`;
+            }
             workSpaceItemSelectedAsDropTarget.childNodes[3].appendChild(item);
             workSpaceItemSelectedAsDropTarget.childNodes[3].style.display = 'flex';
+            //initialisation of work_space container item
             item.style = null;
             item.className = 'work-space-container-item';
+            item.style.width = `${CONFIG.UI.workSpace.defaultOffsetsWorkSpaceContainerItem.width *
+                CONFIG.UI.workZoneCurrentScale}px`;
+            item.style.height = `${CONFIG.UI.workSpace.defaultOffsetsWorkSpaceContainerItem.height *
+                CONFIG.UI.workZoneCurrentScale}px`;
+            item.style.marginRight = `${CONFIG.UI.workSpace.gapBetweenContainedItems *
+                CONFIG.UI.workZoneCurrentScale}px`;
+            item.style.marginTop = `${CONFIG.UI.workSpace.gapBetweenContainedItems *
+                CONFIG.UI.workZoneCurrentScale}px`;
+            item.style.borderRadius = `${CONFIG.UI.defaultWorkZoneItemBorderRadius *
+                CONFIG.UI.workZoneCurrentScale}px`;
         } else if (workSpaceItemDropType == 1) {
             workSpaceItemSelectedAsDropTarget.parentNode.childNodes[3].appendChild(item);
             workSpaceItemSelectedAsDropTarget.parentNode.childNodes[3].style.display = 'flex';
@@ -243,19 +312,24 @@ function itemDropActions(item, workSpaceItemDropType, workFieldSelectedAsDropTar
             item.className = 'work-space-container-item';
         }
     }
+    
+    if (enableItemPositionCalculationMethod == true) {
+        calculatePositionForItems(item)
+    }
+    enableItemPositionCalculationMethod = false;
     document.body.onmousemove = null;
     document.body.onmouseup = null;
 }
 
 /**
- * Showing context menu with releted to selected item content
+ * Showing context menu with content wich is releted to selected item 
  * @param {selected item} item 
  */
 function showContextMenuOfItem(item, event) {
     removeContextMenu()
     contextMenu = document.createElement('div')
     contextMenu.className = 'context-menu'
-    workZone.append(contextMenu)
+    document.body.append(contextMenu)
     contextMenuContent = [
         {
             name:`${event.clientX}, ${event.clientY}`,
@@ -263,6 +337,7 @@ function showContextMenuOfItem(item, event) {
                 alert(contextMenuContent[0].name)
                 removeContextMenu()
             },
+            extendable: {}
         },
         {
             name:`${item.getAttribute('i-name')}`,
@@ -270,22 +345,39 @@ function showContextMenuOfItem(item, event) {
                 console.log(contextMenuContent[1].name)
                 removeContextMenu()
             },
-        }
+        }, 
+        {
+            name:`hr`
+        },
+        {
+            name: `Remove`,
+            method: () => {
+                item.remove()
+                removeContextMenu()
+            },
+        }, 
     ]
 
     contextMenuContent.forEach((element, index) => {
-        contextMenu.innerHTML = contextMenu.innerHTML +
-        `
-            <div class="context-menu-item" onclick="contextMenuContent[${index}].method()">
-                ${element.name}
-            <div>
-        `
+        if(element.name == 'hr') {
+            contextMenu.innerHTML = contextMenu.innerHTML +
+            `
+                <div class="context-menu-separator"></div>
+            `
+        } else {
+            contextMenu.innerHTML = contextMenu.innerHTML +
+            `
+                <div class="context-menu-item" onclick="contextMenuContent[${index}].method()">
+                    ${element.name}
+                <div>
+            `
+        }
     })
 
     contextMenu.style.transition = `all ease-in-out ${CONFIG.logic.contextMenuOpeningSpeed}s`
     contextMenu.style.top = `${event.clientY + 2}px`
     contextMenu.style.left = `${event.clientX + 2}px`
-    contextMenu.style.zIndex = 2001;
+    contextMenu.style.zIndex = 2000;
     setTimeout(()=>{
         contextMenu.style.opacity = 1
     },10)
@@ -299,24 +391,4 @@ function removeContextMenu() {
     }
     contextMenuContent = null;
 }
-
-//loop wich allows to accept all needed functions to every root item
-for (let i = 0; i < rootItems.length; i++) {
-    rootItems[i].onmousedown = (event) => {
-        createNewItem(event, rootItems[i]);
-        //Variable has been assigned in createNewItem function
-        moveAt(event, newElementOfSchema, shiftX, shiftY);
-        addDragAndDropToItem(newElementOfSchema);
-    }
-}
-
-document.body.onmousedown = (event) => {
-    if (!document.elementFromPoint(event.clientX, event.clientY).closest('.context-menu-item')) {
-        removeContextMenu()
-    }
-}
-
-document.oncontextmenu = () => false;
-
-
 

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+    <title>dragun drop</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 <body style="position: relative; display: none;">
@@ -24,36 +25,45 @@
             </div>
             <div class="drag-and-drop-items-separator">
             </div>
-            <div class="drag-and-drop-item" i-inventory="" i-name="monitor" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="item">
+            <div class="drag-and-drop-item" i-inventory="" i-name="monitor" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="device">
                 <img class="unit-image" src="./icons/computer.svg" alt="">
             </div>
-            <div class="drag-and-drop-item" i-inventory="" i-name="pc" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="item">
+            <div class="drag-and-drop-item" i-inventory="" i-name="pc" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="device">
                 <img class="unit-image" src="./icons/cpu.svg" alt="">
             </div>
-            <div class="drag-and-drop-item" i-inventory="" i-name="ups" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="item">
+            <div class="drag-and-drop-item" i-inventory="" i-name="ups" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="device">
                 <img class="unit-image" src="./icons/uninterrupted-power-supply.svg" alt="">
             </div>
-            <div class="drag-and-drop-item" i-inventory="" i-name="printer" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="item">
+            <div class="drag-and-drop-item" i-inventory="" i-name="printer" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="device">
                 <img class="unit-image" src="./icons/printer.svg" alt="">
             </div>
-            <div class="drag-and-drop-item" i-inventory="" i-name="laptop" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="item">
+            <div class="drag-and-drop-item" i-inventory="" i-name="laptop" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="device">
                 <img class="unit-image" src="./icons/laptop2.svg" alt="">
             </div>
-            <div class="drag-and-drop-item" i-inventory="" i-name="switch" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="item">
+            <div class="drag-and-drop-item" i-inventory="" i-name="switch" i-addinfo="" i-is-selectable="false" i-is-movable="true" i-type="device">
                 <img class="unit-image" src="./icons/switch.svg" alt="">
             </div>
-            <button style="display:none" id="debug_button">
-                debug button
-            </button>
+            <div style="display: flex; flex-direction:column; width: 30px;">
+                <button id="debug_button_1" style="padding: 3px;">
+                    debug button 1
+                </button>
+                <button id="debug_button_2" style="padding: 3px;">
+                    debug button 2
+                </button>
+            </div>
         </div>
-        <div class="main-field-holder" id="main_field_holder">
-            <div class="main-field" id="main_field">
+        <div class="pahlava" id="pahlava">
+            <div class="main-field-holder" id="main_field_holder">
+                <div class="main-field" id="main_field">
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="./app.js" type="application/javascript"></script>
-    <script src="./script.js" type="application/javascript"></script>
-    <script src="./main_loop.js" type="application/javascript"></script>
+    <script src="./1_config.js" type="application/javascript"></script>
+    <script src="./1.2_available_items.js" type="application/javascript"></script>
+    <script src="./2_viewport.js" type="application/javascript"></script>
+    <script src="./3_items.js" type="application/javascript"></script>
+    <script src="./4_app.js" type="application/javascript"></script>  
 </body>
 </html>
