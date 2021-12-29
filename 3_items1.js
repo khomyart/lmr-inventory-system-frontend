@@ -59,22 +59,11 @@ function createNewItem(event, rootItem) {
         newElementOfSchema.childNodes[1].className = `unit-image`;
         newElementOfSchema.childNodes[1].style.width = `${CONFIG.UI.defaultWorkZoneItemImageOffsets.width * CONFIG.UI.workZoneCurrentScale}px`;
         newElementOfSchema.childNodes[1].style.height = `${CONFIG.UI.defaultWorkZoneItemImageOffsets.height * CONFIG.UI.workZoneCurrentScale}px`;
-        //setting info panel near element
-        infoPanel = newElementOfSchema.childNodes[3].childNodes[1];
-        infoPanel.style.display = 'flex';
-        infoPanel.style.position = 'absolute';
-        infoPanel.style.top = `${-CONFIG.UI.defaultWorkZoneItemsOffsets.height * CONFIG.UI.workZoneCurrentScale/2}px`;
-        infoPanel.style.left = 
-        `${((CONFIG.UI.defaultWorkZoneItemsOffsets.width - CONFIG.UI.defaultWorkZoneItemImageOffsets.width)/2
-            + CONFIG.UI.infoPanel.defaultDistanceFromWorkZoneItem) * CONFIG.UI.workZoneCurrentScale}px`;
-        infoPanel.style.height = 
-        `${CONFIG.UI.defaultWorkZoneItemsOffsets.height * CONFIG.UI.workZoneCurrentScale}px`;
-        infoPanel.childNodes[1].style.width = `${CONFIG.UI.infoPanel.imageSize.width * CONFIG.UI.workZoneCurrentScale}px`;
-        infoPanel.childNodes[1].style.height = `${CONFIG.UI.infoPanel.imageSize.height * CONFIG.UI.workZoneCurrentScale}px`;
-        infoPanel.childNodes[3].style.width = `${CONFIG.UI.infoPanel.imageSize.width * CONFIG.UI.workZoneCurrentScale}px`;
-        infoPanel.childNodes[3].style.height = `${CONFIG.UI.infoPanel.imageSize.height * CONFIG.UI.workZoneCurrentScale}px`;
-        infoPanel.childNodes[5].style.width = `${CONFIG.UI.infoPanel.imageSize.width * CONFIG.UI.workZoneCurrentScale}px`;
-        infoPanel.childNodes[5].style.height = `${CONFIG.UI.infoPanel.imageSize.height * CONFIG.UI.workZoneCurrentScale}px`;
+        //setting info panel 
+        newElementOfSchema.childNodes[3].style.display = 'flex';
+        newElementOfSchema.childNodes[3].style.position = 'absolute';
+        newElementOfSchema.childNodes[3].style.top = `${0}px`;
+        newElementOfSchema.childNodes[3].style.left = `${CONFIG.UI.defaultWorkZoneItemsOffsets.width + 10}px`;
     }
 
     //becouse workZone item has a bit different scale, need to recalculate initial shifts

@@ -30,7 +30,6 @@ function zoom(direction, step) {
             e.style.width =`${CONFIG.UI.defaultWorkZoneItemsOffsets.width * CONFIG.UI.workZoneCurrentScale}px`;
             e.style.height =`${CONFIG.UI.defaultWorkZoneItemsOffsets.height * CONFIG.UI.workZoneCurrentScale}px`;
             e.style.borderRadius =`${CONFIG.UI.defaultWorkZoneItemBorderRadius * CONFIG.UI.workZoneCurrentScale}px`;
-            
         })
     
         document.querySelectorAll('.unit-image').forEach(e => {

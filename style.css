@@ -134,12 +134,12 @@ html, body {
     margin-bottom: 10px;
 }
 
-.drag-and-drop-item:hover {
+/* .drag-and-drop-item:hover {
     cursor: grab;
     -webkit-box-shadow: 0px 0px 5px 3px rgb(255, 255, 255);
     -moz-box-shadow: 0px 0px 5px 3px rgb(255, 255, 255);
     box-shadow: 0px 0px 5px 3px rgb(255, 255, 255);
-}
+} */
 
 .pahlava {
     width: 100%;
@@ -208,16 +208,15 @@ html, body {
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.4);
 }
 
-.field-item:hover {
+/* .field-item:hover {
     cursor: grab;
-}
+} */
 
 .work-space {
     display: flex;
     align-items: flex-start;
     flex-direction: row;
     user-select: none;
-    cursor: grab;
     position: absolute;
     z-index: 1000;
     border: 1px solid rgba(0, 0, 0, 0.205);
@@ -263,13 +262,31 @@ html, body {
     align-items: center;
     justify-content: center;
     user-select: none;
-    cursor: grab;
 }
 
-/* .unit-image {
-    width: 50px;
-    height: 50px;
-} */
+.additional-info-holder {
+    position: relative;
+    background-color: black;
+}
+
+.additional-info-states {
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    background-color: burlywood;
+}
+
+.additional-info-image {
+    width: 15px;
+    height: 15px;
+}
+
+.additional-info-image-holder {
+    display: flex;
+}
 
 .context-menu {
     position: absolute;
@@ -282,7 +299,7 @@ html, body {
     opacity: 0;
     width: fit-content;
     height: fit-content;
-    width: 200px;
+    min-width: 200px;
     padding: 3px 0px;
 }
 
@@ -300,7 +317,7 @@ html, body {
 
 .context-menu-separator {
     margin: 3px 0px;
-    width: 30%;
+    width: 100%;
     border-top: 1px solid rgba(139, 139, 139, 0.507);
 }
 
@@ -394,4 +411,14 @@ html, body {
 
 .items-menu-category-selected {
     border: 2px solid black;
+}
+
+.context-panel {
+    width: 300px;
+    height: 100%;
+    background-color: rgb(173, 173, 173);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px 10px 10px 10px;
 }
