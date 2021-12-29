@@ -30,6 +30,7 @@ let CONFIG = {
             width: 30,
             height: 30
         },
+        zoomStep: 0.1,
         defaultWorkZoneItemBorderRadius: 3, //px
         workZoneCurrentScale: 1, //multiplier
         workZoneMinScale: 0.2,

@@ -146,12 +146,15 @@ html, body {
     height: 100%;
     overflow: auto;
     background-color: black;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /*TODO: work with this class*/
 .main-field-holder {
-    width: 4781px;
-    height: 3856px;
+    /* width: 4781px;
+    height: 3856px; */
     display: flex;
     position: relative;
     justify-content: center;
@@ -159,6 +162,7 @@ html, body {
     box-sizing: border-box;
     background-color: rgb(206, 206, 206);
     overflow: hidden;
+    
 }
 
 /* .main-field-holder-top {

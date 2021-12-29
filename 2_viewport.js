@@ -100,8 +100,9 @@ function zoom(direction, step) {
         //????
         everythingHolder.scrollLeft += (workZoneHolder.offsetWidth  - previousWorkZoneHolderOffset.width) /2 
         everythingHolder.scrollTop += (workZoneHolder.offsetHeight - previousWorkZoneHolderOffset.height) /2 
-        //everythingHolder.scrollTop += 2 * CONFIG.UI.workZoneCurrentScale;
-        //everythingHolder.scrollLeft = workZoneHolder.offsetWidth * scrollPosition.left
+        // everythingHolder.scrollTop += 2 * CONFIG.UI.workZoneCurrentScale;
+        // everythingHolder.scrollLeft = workZoneHolder.offsetWidth * scrollPosition.left
+        // everythingHolder.scrollTop = 
     }
 }
 

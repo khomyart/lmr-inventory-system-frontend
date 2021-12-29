@@ -133,7 +133,15 @@ function itemDragActions(item, event) {
     workFieldSelectedAsDropTarget = null;
     workSpaceItemSelectedAsDropTarget = null;
     workSpaceContainerItemSelectedAsMoveTarget = null;
-
+    //getting scroll position, when item has been spawned
+    initialScrollPosition = {
+        x: everythingHolder.scrollLeft,
+        y: everythingHolder.scrollTop
+    };
+    newScrollPosition = {
+        x: null,
+        y: null,
+    };
     shiftX = event.pageX - item.getBoundingClientRect().left + workZone.getBoundingClientRect().left;
     shiftY = event.pageY - item.getBoundingClientRect().top + workZone.getBoundingClientRect().top;
 
@@ -142,20 +150,38 @@ function itemDragActions(item, event) {
         document.elementFromPoint(event.clientX, event.clientY).closest('.work-space-container-item');
     }
 
+    mouseEvent = {
+        clientX: null,
+        clientY: null
+    }
+    
     document.body.onmousemove = (event) => {
         if (event.buttons == 1) {
             enableItemPositionCalculationMethod = true;
             if(contextMenu) {
                 removeContextMenu()
             }
-            
+            newScrollPosition.y = everythingHolder.scrollTop;
+            newScrollPosition.x = everythingHolder.scrollLeft;
+            if (newScrollPosition.x != initialScrollPosition.x 
+                || newScrollPosition.y != initialScrollPosition.y) {
+                mouseEvent.clientX = event.clientX + (newScrollPosition.x - initialScrollPosition.x);
+                mouseEvent.clientY = event.clientY + (newScrollPosition.y - initialScrollPosition.y);
+            } else {
+                mouseEvent.clientX = event.clientX;
+                mouseEvent.clientY = event.clientY;
+            }
+            console.log(initialScrollPosition)
+            // var x = (event.pageX - everythingHolder.offsetLeft) + everythingHolder.scrollLeft;
+            // var y = (event.pageY - everythingHolder.offsetTop) + everythingHolder.scrollTop;
+            //console.log(x, y)
             if(currentItem) {
                 item = currentItem
                 shiftX = event.pageX - item.getBoundingClientRect().left + workZone.getBoundingClientRect().left;
                 shiftY = event.pageY - item.getBoundingClientRect().top + workZone.getBoundingClientRect().top;
                 item.className = 'field-item' 
                 workZone.append(item)
-                zoom('out', 0);
+                calculatePositionForItems(item)
                 moveAt(event, item, shiftX, shiftY);   
                 item.style.opacity = CONFIG.itemOpacityWhileMoving;
                 /**
@@ -173,8 +199,9 @@ function itemDragActions(item, event) {
             }
 
             item.onmouseup = null
-
-            moveAt(event, item, shiftX, shiftY);           
+            // mouseEvent.clientX = x;
+            // mouseEvent.clientY = y;
+            moveAt(mouseEvent, item, shiftX, shiftY);           
             item.style.opacity = CONFIG.logic.itemOpacityWhileMoving;
             //To get information about what we have under the item wich moving with cursor, we should do checking when actual item 
             //is invisible, so in this case we will get correct information for workFieldSelectedAsDropTarget variable
@@ -248,24 +275,32 @@ function itemDropActions(item, workSpaceItemDropType, workFieldSelectedAsDropTar
         enableItemPositionCalculationMethod = false;
         item.style.left =
         CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + '%';
+        item.style.top =
+        item.offsetTop / workZone.offsetHeight * 100  + '%';
     }
 
     if (workZone.getBoundingClientRect().right < item.getBoundingClientRect().right) {
         enableItemPositionCalculationMethod = false;
         item.style.left = 100 - (CONFIG.UI.defaultWorkZoneItemsOffsets.width * CONFIG.UI.workZoneCurrentScale /
              workZone.offsetWidth * 100) - CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + '%';
+        item.style.top =
+        item.offsetTop / workZone.offsetHeight * 100  + '%';
     }
 
     if (workZone.getBoundingClientRect().top > item.getBoundingClientRect().top) {
         enableItemPositionCalculationMethod = false;
         item.style.top = 
         CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + '%';
+        item.style.left =
+        item.offsetLeft / workZone.offsetWidth * 100  + '%';
     }
 
     if (workZone.getBoundingClientRect().bottom < item.getBoundingClientRect().bottom) {
         enableItemPositionCalculationMethod = false;
         item.style.top = 100 - (CONFIG.UI.defaultWorkZoneItemsOffsets.height * CONFIG.UI.workZoneCurrentScale /
              workZone.offsetHeight * 100) - CONFIG.logic.itemMovingOffsetFromWorkZoneBorder + '%';
+        item.style.left =
+        item.offsetLeft / workZone.offsetWidth * 100  + '%';
     }
 
     if (workSpaceItemSelectedAsDropTarget) {

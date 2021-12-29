@@ -59,8 +59,8 @@ setTimeout(() => {
     workZoneHolder.style.width = `${workZone.offsetWidth + document.body.offsetWidth * 1.5}px`;
     workZoneHolder.style.height = `${workZone.offsetHeight + document.body.offsetHeight * 1.5}px`;
     //initial scroll position, scroll can be setted up only if workZoneHolder with and haight are configured
-    everythingHolder.scrollTop = workZoneHolder.offsetHeight / 2 - everythingHolder.offsetHeight;
-    everythingHolder.scrollLeft = workZoneHolder.offsetWidth  - everythingHolder.offsetWidth * 2;
+    everythingHolder.scrollTop = workZoneHolder.offsetHeight/2 - everythingHolder.offsetHeight / 2;
+    everythingHolder.scrollLeft = workZoneHolder.offsetWidth/2 - everythingHolder.offsetWidth / 2;
 },10)
 
 //Initialization root items, making them be dependent of config
@@ -117,11 +117,11 @@ workZoneHolder.onmousewheel = (e) => {
         e.preventDefault();
 
         if(e.deltaY == 100){
-            zoom('out', 0.05);
+            zoom('out', CONFIG.UI.zoomStep);
         }
 
         if(e.deltaY == -100){
-            zoom('in', 0.05);
+            zoom('in', CONFIG.UI.zoomStep);
         }
     }
 }
